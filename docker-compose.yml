@@ -1,0 +1,32 @@
+version: '3.2'
+services:
+  app:
+    container_name: app
+    build:
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/var/www/app/:rw
+      - ./docker/apache:/etc/apache2/sites-enabled/:ro
+      - ./docker/logs:/var/log/apache2/
+    ports:
+      - '80:80'
+    networks:
+      - network
+    depends_on:
+      - db
+  db:
+    container_name: db
+    image: mariadb:10.11.11
+    ports:
+      - '3306:3306'
+    env_file:
+      - .env
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - network
+
+volumes:
+  db_data:
+networks:
+  network:
